@@ -3,6 +3,7 @@
   "genes": [
     {
       "type": "Gene",
+      "schema_version": "1.5.0",
       "id": "gene_gep_repair_from_errors",
       "category": "repair",
       "signals_match": [
@@ -18,7 +19,8 @@
         "Extract structured signals from logs and user instructions",
         "Select an existing Gene by signals match (no improvisation)",
         "Estimate blast radius (files, lines) before editing",
-        "Apply smallest reversible patch",
+        "Apply smallest reversible patch to the BROKEN file only",
+        "NEVER delete, overwrite, or rm -rf any file inside skills/ directories",
         "Validate using declared validation steps; rollback on failure",
         "Solidify knowledge: append EvolutionEvent, update Gene/Capsule store"
       ],
@@ -26,7 +28,18 @@
         "max_files": 20,
         "forbidden_paths": [
           ".git",
-          "node_modules"
+          "node_modules",
+          "skills/evolver",
+          "skills/feishu-evolver-wrapper",
+          "skills/feishu-common",
+          "skills/feishu-post",
+          "skills/feishu-card",
+          "skills/feishu-doc",
+          "skills/common",
+          "skills/clawhub",
+          "skills/clawhub-batch-undelete",
+          "skills/git-sync",
+          "assets/gep/events.jsonl"
         ]
       },
       "validation": [
@@ -36,6 +49,7 @@
     },
     {
       "type": "Gene",
+      "schema_version": "1.5.0",
       "id": "gene_gep_optimize_prompt_and_assets",
       "category": "optimize",
       "signals_match": [
@@ -53,6 +67,7 @@
         "Prefer reusing existing Gene/Capsule; only create if no match exists",
         "Refactor prompt assembly to embed assets (genes, capsules, parent event)",
         "Reduce noise and ambiguity; enforce strict output schema",
+        "NEVER delete, overwrite, or rm -rf any file inside skills/ directories",
         "Validate by running node index.js run and ensuring no runtime errors",
         "Solidify: record EvolutionEvent, update Gene definitions, create Capsule on success"
       ],
@@ -60,7 +75,18 @@
         "max_files": 20,
         "forbidden_paths": [
           ".git",
-          "node_modules"
+          "node_modules",
+          "skills/evolver",
+          "skills/feishu-evolver-wrapper",
+          "skills/feishu-common",
+          "skills/feishu-post",
+          "skills/feishu-card",
+          "skills/feishu-doc",
+          "skills/common",
+          "skills/clawhub",
+          "skills/clawhub-batch-undelete",
+          "skills/git-sync",
+          "assets/gep/events.jsonl"
         ]
       },
       "validation": [
@@ -69,6 +95,7 @@
     },
     {
       "type": "Gene",
+      "schema_version": "1.5.0",
       "id": "gene_gep_innovate_from_opportunity",
       "category": "innovate",
       "signals_match": [
@@ -89,6 +116,7 @@
         "Design a minimal, testable implementation plan (prefer small increments)",
         "Estimate blast radius; innovate changes may touch more files but must stay within constraints",
         "Implement the change with clear validation criteria",
+        "NEVER delete, overwrite, or rm -rf any file inside skills/ directories",
         "Validate using declared validation steps; rollback on failure",
         "Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success"
       ],
@@ -97,6 +125,16 @@
         "forbidden_paths": [
           ".git",
           "node_modules",
+          "skills/evolver",
+          "skills/feishu-evolver-wrapper",
+          "skills/feishu-common",
+          "skills/feishu-post",
+          "skills/feishu-card",
+          "skills/feishu-doc",
+          "skills/common",
+          "skills/clawhub",
+          "skills/clawhub-batch-undelete",
+          "skills/git-sync",
           "assets/gep/events.jsonl"
         ]
       },

@@ -100,11 +100,11 @@ async function main() {
           120000
         );
 
-        const maxCyclesPerProcess = parseMs(process.env.EVOLVER_MAX_CYCLES_PER_PROCESS, 100) || 100;
-        const maxRssMb = parseMs(process.env.EVOLVER_MAX_RSS_MB, 500) || 500;
+        const maxCyclesPerProcess = parseMs(process.env.EVOLVER_MAX_CYCLES_PER_PROCESS, 100);
+        const maxRssMb = parseMs(process.env.EVOLVER_MAX_RSS_MB, 500);
         const suicideEnabled = String(process.env.EVOLVER_SUICIDE || '').toLowerCase() !== 'false';
 
-        let currentSleepMs = Math.min(maxSleepMs, Math.max(minSleepMs, minSleepMs));
+        let currentSleepMs = Math.min(maxSleepMs, minSleepMs);
         let cycleCount = 0;
 
         while (true) {
@@ -168,7 +168,7 @@ async function main() {
     // Post-run hint
     console.log('\n' + '=======================================================');
     console.log('Capability evolver finished. If you use this project, consider starring the upstream repository.');
-    console.log('Upstream: https://github.com/autogame-17/capability-evolver');
+    console.log('Upstream: https://github.com/autogame-17/evolver');
     console.log('=======================================================\n');
     
   } else if (command === 'solidify') {

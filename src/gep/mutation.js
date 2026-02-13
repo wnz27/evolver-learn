@@ -29,26 +29,8 @@ function hasErrorishSignal(signals) {
   return false;
 }
 
-// Opportunity signals that indicate a chance to innovate (not just fix).
-var OPPORTUNITY_SIGNALS = [
-  'user_feature_request',
-  'user_improvement_suggestion',
-  'perf_bottleneck',
-  'capability_gap',
-  'stable_success_plateau',
-  'external_opportunity',
-  'issue_already_resolved',
-  'openclaw_self_healed',
-  'empty_cycle_loop_detected',
-];
-
-function hasOpportunitySignal(signals) {
-  var list = Array.isArray(signals) ? signals.map(function (s) { return String(s || ''); }) : [];
-  for (var i = 0; i < OPPORTUNITY_SIGNALS.length; i++) {
-    if (list.includes(OPPORTUNITY_SIGNALS[i])) return true;
-  }
-  return false;
-}
+// Import canonical OPPORTUNITY_SIGNALS from signals.js to avoid divergent lists.
+var { OPPORTUNITY_SIGNALS, hasOpportunitySignal } = require('./signals');
 
 function mutationCategoryFromContext({ signals, driftEnabled }) {
   if (hasErrorishSignal(signals)) return 'repair';

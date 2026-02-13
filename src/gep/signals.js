@@ -1,4 +1,5 @@
-// Opportunity signal names (shared with mutation.js and personality.js).
+// Canonical opportunity signal names (single source of truth).
+// Imported by mutation.js and personality.js -- do NOT duplicate elsewhere.
 var OPPORTUNITY_SIGNALS = [
   'user_feature_request',
   'user_improvement_suggestion',
@@ -6,6 +7,9 @@ var OPPORTUNITY_SIGNALS = [
   'capability_gap',
   'stable_success_plateau',
   'external_opportunity',
+  'issue_already_resolved',
+  'openclaw_self_healed',
+  'empty_cycle_loop_detected',
   'recurring_error',
   'unsupported_input_type',
   'evolution_stagnation_detected',

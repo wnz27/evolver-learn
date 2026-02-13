@@ -296,12 +296,14 @@ function checkConstraints({ gene, blast, blastRadiusEstimate }) {
     if (isForbiddenPath(f, forbidden)) violations.push(`forbidden_path touched: ${f}`);
   }
 
-  // --- Critical protection: reject any evolution that deletes/empties core dependencies ---
+  // --- Critical protection: reject any evolution that modifies core skill dependencies ---
+  // ALL gene categories (including repair) are forbidden from modifying installed skill directories.
+  // Repair should fix the evolver's OWN code, not touch installed skill copies.
   for (const f of blast.all_changed_files || blast.changed_files || []) {
     if (isCriticalProtectedPath(f)) {
       const norm = normalizeRelPath(f);
-      if (norm.startsWith('skills/evolver/') && gene.category !== 'repair') {
-        violations.push(`critical_path_modified_without_repair_intent: ${norm}`);
+      if (norm.startsWith('skills/')) {
+        violations.push(`critical_skill_path_modified: ${norm}`);
       }
     }
   }
@@ -310,16 +312,15 @@ function checkConstraints({ gene, blast, blastRadiusEstimate }) {
 }
 
 function readStateForSolidify() {
-  const memoryDir = getMemoryDir();
   const statePath = path.join(getEvolutionDir(), 'evolution_solidify_state.json');
   return readJsonIfExists(statePath, { last_run: null });
 }
 
 function writeStateForSolidify(state) {
-  const memoryDir = getMemoryDir();
   const statePath = path.join(getEvolutionDir(), 'evolution_solidify_state.json');
+  const stateDir = path.dirname(statePath);
   try {
-    if (!fs.existsSync(memoryDir)) fs.mkdirSync(memoryDir, { recursive: true });
+    if (!fs.existsSync(stateDir)) fs.mkdirSync(stateDir, { recursive: true });
   } catch {}
   const tmp = `${statePath}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(state, null, 2) + '\n', 'utf8');
@@ -634,6 +635,7 @@ function buildAutoGene({ signals, intent }) {
       max_files: 12,
       forbidden_paths: [
         '.git', 'node_modules',
+        'skills/evolver',
         'skills/feishu-evolver-wrapper', 'skills/feishu-common',
         'skills/feishu-post', 'skills/feishu-card', 'skills/feishu-doc',
         'skills/common', 'skills/clawhub', 'skills/clawhub-batch-undelete',

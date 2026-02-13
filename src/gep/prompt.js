@@ -1,4 +1,5 @@
 const { captureEnvFingerprint } = require('./envFingerprint');
+const { getWorkspaceRoot } = require('./paths');
 
 /**
  * Build a minimal prompt for direct-reuse mode.
@@ -270,15 +271,17 @@ CONSTRAINTS:
 - New skills -> \`skills/<name>/\`.
 - Modify \`skills/evolver/\` only with rigor > 0.8.
 
-CRITICAL SAFETY (SYSTEM CRASH PREVENTION):
-- NEVER delete, empty, overwrite, or rm -rf ANY of these skill directories:
-  feishu-evolver-wrapper, feishu-common, feishu-post, feishu-card, feishu-doc,
-  common, clawhub, clawhub-batch-undelete, git-sync, evolver.
+CRITICAL SAFETY (SYSTEM CRASH PREVENTION -- ABSOLUTE RULES):
+- ABSOLUTE BAN: NEVER touch ANY file under skills/ directory. ALL skills/* paths are forbidden.
+  This includes: skills/evolver/, skills/feishu-evolver-wrapper/, skills/feishu-common/,
+  skills/feishu-post/, skills/feishu-card/, skills/feishu-doc/, skills/common/,
+  skills/clawhub/, skills/clawhub-batch-undelete/, skills/git-sync/.
+- NEVER delete, edit, overwrite, move, copy-over, or rm -rf ANY file inside skills/.
 - NEVER delete protected root files: MEMORY.md, SOUL.md, IDENTITY.md, AGENTS.md,
   USER.md, HEARTBEAT.md, RECENT_EVENTS.md, TOOLS.md, openclaw.json, .env, package.json.
-- If a skill is broken, REPAIR it (fix the file). Do NOT delete and recreate.
-- NEVER run \`rm -rf\` on ANY directory inside skills/. Use targeted file edits only.
-- Violation of these rules triggers automatic rollback and marks the cycle as FAILED.
+- If a skill is broken, file a report. Do NOT attempt to fix files inside skills/.
+- NEVER run \`rm -rf\` on ANY directory. Use targeted file edits only.
+- Any file change inside skills/ triggers automatic FAILED + rollback. There are NO exceptions.
 
 COMMON FAILURE PATTERNS (AVOID THESE):
 - Blast radius exceeded: max_files or max_lines over gene limit = FAILED. Split into multiple cycles.
@@ -336,7 +339,7 @@ If core write is unavailable for any reason, create fallback status JSON manuall
 
 Write a JSON file with your status:
 \`\`\`bash
-cat > /home/crishaocredits/.openclaw/workspace/logs/status_${cycleId}.json << 'STATUSEOF'
+cat > ${getWorkspaceRoot()}/logs/status_${cycleId}.json << 'STATUSEOF'
 {
   "result": "success|failed",
   "en": "Status: [INTENT] <describe what you did in 1-2 sentences, in English>",
