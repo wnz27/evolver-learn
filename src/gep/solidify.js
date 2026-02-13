@@ -740,6 +740,7 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   if (!dryRun) writeStateForSolidify(state);
 
   // Search-First Evolution: auto-publish eligible capsules to the Hub.
+  // Hub requires Gene + Capsule bundled together (payload.assets = [Gene, Capsule]).
   let publishResult = null;
   if (!dryRun && capsule && capsule.a2a && capsule.a2a.eligible_to_broadcast) {
     const sourceType = lastRun && lastRun.source_type ? String(lastRun.source_type) : 'generated';
@@ -750,29 +751,50 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
     // Skip publishing if: disabled, private, reused asset, or below minimum score
     if (autoPublish && visibility === 'public' && sourceType !== 'reused' && (capsule.outcome.score || 0) >= minPublishScore) {
       try {
-        const { buildPublish, httpTransportSend } = require('./a2aProtocol');
+        const { buildPublishBundle, httpTransportSend } = require('./a2aProtocol');
         const { sanitizePayload } = require('./sanitize');
         const hubUrl = (process.env.A2A_HUB_URL || '').replace(/\/+$/, '');
 
         if (hubUrl) {
-          const sanitized = sanitizePayload(capsule);
-          const msg = buildPublish({ asset: sanitized });
-          const result = httpTransportSend(msg, { hubUrl });
-          // httpTransportSend returns a Promise
-          if (result && typeof result.then === 'function') {
-            result
-              .then(function (res) {
-                if (res && res.ok) {
-                  console.log(`[AutoPublish] Published ${capsule.asset_id || capsule.id} to Hub.`);
-                } else {
-                  console.log(`[AutoPublish] Hub rejected: ${JSON.stringify(res)}`);
-                }
-              })
-              .catch(function (err) {
-                console.log(`[AutoPublish] Failed (non-fatal): ${err.message}`);
-              });
+          // Hub requires bundle format: Gene + Capsule together.
+          // geneUsed comes from ensureGene() earlier in solidify().
+          if (!geneUsed || geneUsed.type !== 'Gene') {
+            publishResult = { attempted: false, reason: 'no_gene_available_for_bundle' };
+          } else {
+            const sanitizedCapsule = sanitizePayload(capsule);
+            const sanitizedGene = sanitizePayload(geneUsed);
+            const msg = buildPublishBundle({ gene: sanitizedGene, capsule: sanitizedCapsule, event: event });
+            const result = httpTransportSend(msg, { hubUrl });
+            // httpTransportSend returns a Promise
+            if (result && typeof result.then === 'function') {
+              result
+                .then(function (res) {
+                  if (res && res.ok) {
+                    console.log(`[AutoPublish] Published bundle (Gene: ${geneUsed.id}, Capsule: ${capsule.id}) to Hub.`);
+                  } else {
+                    console.log(`[AutoPublish] Hub rejected bundle: ${JSON.stringify(res)}`);
+                  }
+                })
+                .catch(function (err) {
+                  console.log(`[AutoPublish] Failed (non-fatal): ${err.message}`);
+                });
+            }
+            publishResult = { attempted: true, asset_id: capsule.asset_id || capsule.id, gene_id: geneUsed.asset_id || geneUsed.id, bundle: true };
+
+            // Complete external task if one was active for this run
+            if (lastRun && lastRun.active_task && lastRun.active_task.task_id) {
+              try {
+                const { completeTask } = require('./taskReceiver');
+                completeTask(lastRun.active_task.task_id, capsule.asset_id || capsule.id)
+                  .then(function (ok) {
+                    if (ok) console.log(`[TaskReceiver] Completed task ${lastRun.active_task.task_id}`);
+                  })
+                  .catch(function () {});
+              } catch (taskErr) {
+                // non-fatal
+              }
+            }
           }
-          publishResult = { attempted: true, asset_id: capsule.asset_id || capsule.id };
         } else {
           publishResult = { attempted: false, reason: 'no_hub_url' };
         }
