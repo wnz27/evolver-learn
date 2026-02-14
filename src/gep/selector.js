@@ -137,7 +137,7 @@ function selectGeneAndCapsule({ genes, capsules, signals, memoryAdvice, driftEna
     memoryAdvice && memoryAdvice.bannedGeneIds instanceof Set ? memoryAdvice.bannedGeneIds : new Set();
   const preferredGeneId = memoryAdvice && memoryAdvice.preferredGeneId ? memoryAdvice.preferredGeneId : null;
 
-  const { selected, alternatives } = selectGene(genes, signals, {
+  const { selected, alternatives, driftIntensity } = selectGene(genes, signals, {
     bannedGeneIds,
     preferredGeneId,
     driftEnabled: !!driftEnabled,
@@ -150,15 +150,17 @@ function selectGeneAndCapsule({ genes, capsules, signals, memoryAdvice, driftEna
     alternatives,
     memoryAdvice,
     driftEnabled,
+    driftIntensity,
   });
   return {
     selectedGene: selected,
     capsuleCandidates: capsule ? [capsule] : [],
     selector,
+    driftIntensity,
   };
 }
 
-function buildSelectorDecision({ gene, capsule, signals, alternatives, memoryAdvice, driftEnabled }) {
+function buildSelectorDecision({ gene, capsule, signals, alternatives, memoryAdvice, driftEnabled, driftIntensity }) {
   const reason = [];
   if (gene) reason.push('signals match gene.signals_match');
   if (capsule) reason.push('capsule trigger matches signals');
@@ -170,6 +172,9 @@ function buildSelectorDecision({ gene, capsule, signals, alternatives, memoryAdv
   }
   if (driftEnabled) {
     reason.push('random_drift_override: true');
+  }
+  if (Number.isFinite(driftIntensity) && driftIntensity > 0) {
+    reason.push(`drift_intensity: ${driftIntensity.toFixed(3)}`);
   }
 
   return {
