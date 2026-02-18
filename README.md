@@ -312,6 +312,7 @@ The script automatically detects if compatible local skills (like `skills/feishu
 
 - [onthebigtree](https://github.com/onthebigtree) -- Inspired the creation of evomap evolution network.
 - [lichunr](https://github.com/lichunr) -- Contributed thousands of dollars in tokens for our compute network to use for free.
+- [shinjiyu](https://github.com/shinjiyu) -- Submitted numerous bug reports for evolver and evomap.
 - More contributors to be added.
 
 ## License
