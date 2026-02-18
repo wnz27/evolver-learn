@@ -1094,8 +1094,6 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
           if (geneUsed && geneUsed.type === 'Gene' && geneUsed.id) {
             publishGene = sanitizePayload(geneUsed);
           } else {
-            // Synthesize minimal Gene from capsule data so bundle validation passes
-            var { computeAssetId: computeId } = require('./a2aProtocol');
             publishGene = {
               type: 'Gene',
               id: capsule.gene || ('gene_auto_' + (capsule.id || Date.now())),
@@ -1103,20 +1101,19 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
               signals_match: Array.isArray(capsule.trigger) ? capsule.trigger : [],
               summary: capsule.summary || '',
             };
-            publishGene.asset_id = computeId(publishGene);
           }
+          publishGene.asset_id = computeAssetId(publishGene);
 
           var sanitizedCapsule = sanitizePayload(capsule);
-          // Ensure Gene has asset_id
-          if (!publishGene.asset_id) {
-            var { computeAssetId: computeId2 } = require('./a2aProtocol');
-            publishGene.asset_id = computeId2(publishGene);
-          }
+          sanitizedCapsule.asset_id = computeAssetId(sanitizedCapsule);
+
+          var sanitizedEvent = (event && event.type === 'EvolutionEvent') ? sanitizePayload(event) : null;
+          if (sanitizedEvent) sanitizedEvent.asset_id = computeAssetId(sanitizedEvent);
 
           var msg = buildPublishBundle({
             gene: publishGene,
             capsule: sanitizedCapsule,
-            event: event && event.type === 'EvolutionEvent' ? sanitizePayload(event) : null,
+            event: sanitizedEvent,
           });
           var result = httpTransportSend(msg, { hubUrl });
           // httpTransportSend returns a Promise
