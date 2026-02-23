@@ -968,6 +968,9 @@ async function run() {
     console.log(`[QuestionGenerator] Generation failed (non-fatal): ${e.message}`);
   }
 
+  // LessonL: lessons received from Hub during fetch
+  let hubLessons = [];
+
   try {
     const fetchResult = await fetchTasks({ questions: proactiveQuestions });
     const hubTasks = fetchResult.tasks || [];
@@ -981,6 +984,12 @@ async function run() {
       if (failed.length > 0) {
         console.log(`[QuestionGenerator] Hub rejected ${failed.length} question(s): ${failed.map(function(q) { return q.error; }).join(', ')}`);
       }
+    }
+
+    // LessonL: capture relevant lessons from Hub
+    if (Array.isArray(fetchResult.relevant_lessons) && fetchResult.relevant_lessons.length > 0) {
+      hubLessons = fetchResult.relevant_lessons;
+      console.log(`[LessonBank] Received ${hubLessons.length} lesson(s) from ecosystem.`);
     }
 
     if (hubTasks.length > 0) {
@@ -1338,6 +1347,8 @@ async function run() {
         blast_radius_estimate: blastRadiusEstimate,
         active_task_id: activeTask ? (activeTask.id || activeTask.task_id || null) : null,
         active_task_title: activeTask ? (activeTask.title || null) : null,
+        applied_lessons: hubLessons.map(function(l) { return l.lesson_id; }).filter(Boolean),
+        hub_lessons: hubLessons,
       };
     writeStateForSolidify(prevState);
   } catch (e) {
@@ -1450,6 +1461,7 @@ ${mutationDirective}
         externalCandidatesPreview,
         hubMatchedBlock,
         failedCapsules: recentFailedCapsules,
+        hubLessons,
       });
 
   // Optional: emit a compact thought process block for wrappers (noise-controlled).

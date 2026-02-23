@@ -711,6 +711,33 @@ function inferCategoryFromSignals(signals) {
   return 'optimize';
 }
 
+function buildSuccessReason({ gene, signals, blast, mutation, score }) {
+  const parts = [];
+
+  if (gene && gene.id) {
+    const category = gene.category || 'unknown';
+    parts.push(`Gene ${gene.id} (${category}) matched signals [${(signals || []).slice(0, 4).join(', ')}].`);
+  }
+
+  if (mutation && mutation.rationale) {
+    parts.push(`Rationale: ${String(mutation.rationale).slice(0, 200)}.`);
+  }
+
+  if (blast) {
+    parts.push(`Scope: ${blast.files} file(s), ${blast.lines} line(s) changed.`);
+  }
+
+  if (typeof score === 'number') {
+    parts.push(`Outcome score: ${score.toFixed(2)}.`);
+  }
+
+  if (gene && Array.isArray(gene.strategy) && gene.strategy.length > 0) {
+    parts.push(`Strategy applied: ${gene.strategy.slice(0, 3).join('; ').slice(0, 300)}.`);
+  }
+
+  return parts.join(' ').slice(0, 1000) || 'Evolution succeeded.';
+}
+
 // ---------------------------------------------------------------------------
 // Epigenetic Marks -- environmental imprints on Gene expression
 // ---------------------------------------------------------------------------
@@ -985,6 +1012,9 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
   const reusedAssetId = lastRun && lastRun.reused_asset_id ? String(lastRun.reused_asset_id) : null;
   const reusedChainId = lastRun && lastRun.reused_chain_id ? String(lastRun.reused_chain_id) : null;
 
+  // LessonL: carry applied lesson IDs for Hub effectiveness adjustment
+  const appliedLessons = lastRun && Array.isArray(lastRun.applied_lessons) ? lastRun.applied_lessons : [];
+
   const event = {
     type: 'EvolutionEvent',
     schema_version: SCHEMA_VERSION,
@@ -1000,6 +1030,7 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
     capsule_id: capsuleId,
     source_type: sourceType,
     reused_asset_id: reusedAssetId,
+    ...(appliedLessons.length > 0 ? { applied_lessons: appliedLessons } : {}),
     env_fingerprint: envFp,
     validation_report_id: validationReport.id,
     meta: {
@@ -1051,6 +1082,7 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
         prevCapsule = Array.isArray(list) ? list.find(c => c && c.type === 'Capsule' && String(c.id) === selectedCapsuleId) : null;
       }
     } catch (e) {}
+    const successReason = buildSuccessReason({ gene: geneUsed, signals, blast, mutation, score });
     capsule = {
       type: 'Capsule',
       schema_version: SCHEMA_VERSION,
@@ -1062,6 +1094,7 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
       blast_radius: { files: blast.files, lines: blast.lines },
       outcome: { status: 'success', score },
       success_streak: 1,
+      success_reason: successReason,
       env_fingerprint: envFp,
       source_type: sourceType,
       reused_asset_id: reusedAssetId,
@@ -1277,6 +1310,21 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
     }
   }
 
+  // --- LessonL: Auto-publish negative lesson to Hub (always-on, lightweight) ---
+  // Unlike anti-pattern publishing (opt-in, full capsule bundle), this publishes
+  // just the failure reason as a structured lesson via the EvolutionEvent.
+  // The Hub's solicitLesson() hook on handlePublish will extract the lesson.
+  // This is achieved by ensuring failure_reason is included in the event metadata,
+  // which we already do above. The Hub-side solicitLesson() handles the rest.
+  // For failures without a published event (no auto-publish), we still log locally.
+  if (!dryRun && !success && event && event.outcome) {
+    var failureContent = buildFailureReason(constraintCheck, validation, protocolViolations, canary);
+    event.failure_reason = failureContent;
+    event.summary = geneUsed
+      ? 'Failed: ' + geneUsed.id + ' on signals [' + (signals.slice(0, 3).join(', ') || 'none') + '] - ' + failureContent.slice(0, 200)
+      : 'Failed evolution on signals [' + (signals.slice(0, 3).join(', ') || 'none') + '] - ' + failureContent.slice(0, 200);
+  }
+
   // --- Auto-complete Hub task ---
   // If this evolution cycle was driven by a Hub task, mark it as completed
   // with the produced capsule's asset_id. Runs after publish so the Hub
@@ -1328,6 +1376,7 @@ module.exports = {
   applyEpigeneticMarks,
   getEpigeneticBoost,
   buildEpigeneticMark,
+  buildSuccessReason,
   BLAST_RADIUS_HARD_CAP_FILES,
   BLAST_RADIUS_HARD_CAP_LINES,
 };

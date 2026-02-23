@@ -63,6 +63,11 @@ async function fetchTasks(opts) {
       result.questions_created = respPayload.questions_created;
     }
 
+    // LessonL: extract relevant lessons from Hub response
+    if (Array.isArray(respPayload.relevant_lessons) && respPayload.relevant_lessons.length > 0) {
+      result.relevant_lessons = respPayload.relevant_lessons;
+    }
+
     return result;
   } catch {
     return { tasks: [] };

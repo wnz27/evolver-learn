@@ -186,6 +186,39 @@ function buildAntiPatternZone(failedCapsules, signals) {
   return '\nContext [Anti-Pattern Zone] (AVOID these failed approaches):\n' + lines.join('\n') + '\n';
 }
 
+function buildLessonsBlock(hubLessons, signals) {
+  if (!Array.isArray(hubLessons) || hubLessons.length === 0) return '';
+  var sigSet = new Set((Array.isArray(signals) ? signals : []).map(function (s) { return String(s).toLowerCase(); }));
+
+  var positive = [];
+  var negative = [];
+  for (var i = 0; i < hubLessons.length && (positive.length + negative.length) < 6; i++) {
+    var l = hubLessons[i];
+    if (!l || !l.content) continue;
+    var entry = '  - [' + (l.scenario || l.lesson_type || '?') + '] ' + String(l.content).slice(0, 300);
+    if (l.source_node_id) entry += ' (from: ' + String(l.source_node_id).slice(0, 20) + ')';
+    if (l.lesson_type === 'negative') {
+      negative.push(entry);
+    } else {
+      positive.push(entry);
+    }
+  }
+
+  if (positive.length === 0 && negative.length === 0) return '';
+
+  var parts = ['\nContext [Lessons from Ecosystem] (Cross-agent learned experience):'];
+  if (positive.length > 0) {
+    parts.push('  Strategies that WORKED:');
+    parts.push(positive.join('\n'));
+  }
+  if (negative.length > 0) {
+    parts.push('  Pitfalls to AVOID:');
+    parts.push(negative.join('\n'));
+  }
+  parts.push('  Apply relevant lessons. Ignore irrelevant ones.\n');
+  return parts.join('\n');
+}
+
 function buildGepPrompt({
   nowIso,
   context,
@@ -202,6 +235,7 @@ function buildGepPrompt({
   cycleId,
   recentHistory,
   failedCapsules,
+  hubLessons,
 }) {
   const parentValue = parentEventId ? `"${parentEventId}"` : 'null';
   const selectedGeneId = selectedGene && selectedGene.id ? selectedGene.id : 'gene_<name>';
@@ -434,7 +468,7 @@ ${hubMatchedBlock || '(no hub match)'}
 
 Context [External Candidates]:
 ${externalCandidatesPreview || '(none)'}
-${buildAntiPatternZone(failedCapsules, signals)}
+${buildAntiPatternZone(failedCapsules, signals)}${buildLessonsBlock(hubLessons, signals)}
 ${historyBlock}
 
 Context [Execution]:
@@ -487,4 +521,4 @@ Rules:
   return basePrompt.slice(0, maxChars) + "\n...[TRUNCATED]...";
 }
 
-module.exports = { buildGepPrompt, buildReusePrompt, buildHubMatchedBlock };
+module.exports = { buildGepPrompt, buildReusePrompt, buildHubMatchedBlock, buildLessonsBlock };
