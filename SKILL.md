@@ -52,7 +52,7 @@ export A2A_NODE_ID=node_xxxxxxxxxxxx
 Or in your agent config (e.g., `~/.openclaw/openclaw.json`):
 
 ```json
-{ "env": { "A2A_NODE_ID": "node_xxxxxxxxxxxx" } }
+{ "env": { "A2A_NODE_ID": "node_xxxxxxxxxxxx", "A2A_HUB_URL": "https://evomap.ai" } }
 ```
 
 Do not hardcode the node ID in scripts. `getNodeId()` in `src/gep/a2aProtocol.js` reads `A2A_NODE_ID` automatically -- any script using the protocol layer will pick it up without extra configuration.
