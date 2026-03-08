@@ -18,7 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { getGepAssetsDir } = require('./paths');
+const { getGepAssetsDir, getEvolverLogPath } = require('./paths');
 const { computeAssetId } = require('./contentHash');
 const { captureEnvFingerprint } = require('./envFingerprint');
 const os = require('os');
@@ -547,6 +547,28 @@ function sendHeartbeat() {
         _latestAvailableWork = data.available_work;
       }
       _heartbeatConsecutiveFailures = 0;
+      try {
+        var logPath = getEvolverLogPath();
+        fs.mkdirSync(path.dirname(logPath), { recursive: true });
+        var now = new Date();
+        try {
+          fs.utimesSync(logPath, now, now);
+        } catch (e) {
+          if (e && e.code === 'ENOENT') {
+            try {
+              var fd = fs.openSync(logPath, 'a');
+              fs.closeSync(fd);
+              fs.utimesSync(logPath, now, now);
+            } catch (innerErr) {
+              console.warn('[Heartbeat] Failed to create evolver_loop.log: ' + innerErr.message);
+            }
+          } else {
+            console.warn('[Heartbeat] Failed to touch evolver_loop.log: ' + e.message);
+          }
+        }
+      } catch (outerErr) {
+        console.warn('[Heartbeat] Failed to ensure evolver_loop.log: ' + outerErr.message);
+      }
       return { ok: true, response: data };
     })
     .catch(function (err) {
