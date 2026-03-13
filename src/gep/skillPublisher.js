@@ -123,7 +123,9 @@ function publishSkillToHub(gene, opts) {
 
   var content = geneToSkillMd(gene);
   var nodeId = getNodeId();
-  var skillId = 'skill_' + (gene.id || 'unnamed').replace(/^gene_/, '');
+  var fmName = content.match(/^name:\s*(.+)$/m);
+  var derivedName = fmName ? fmName[1].trim().toLowerCase().replace(/[^a-z0-9]+/g, '_') : (gene.id || 'unnamed').replace(/^gene_/, '');
+  var skillId = 'skill_' + derivedName;
 
   var body = {
     sender_id: nodeId,
@@ -180,8 +182,13 @@ function updateSkillOnHub(nodeId, skillId, content, opts, gene) {
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(15000),
   })
-    .then(function (res) { return res.json(); })
-    .then(function (data) { return { ok: true, result: data }; })
+    .then(function (res) { return res.json().then(function (data) { return { status: res.status, data: data }; }); })
+    .then(function (result) {
+      if (result.status >= 200 && result.status < 300) {
+        return { ok: true, result: result.data };
+      }
+      return { ok: false, error: result.data?.error || 'update_failed', status: result.status };
+    })
     .catch(function (err) { return { ok: false, error: err.message }; });
 }
 

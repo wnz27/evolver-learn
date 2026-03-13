@@ -458,18 +458,18 @@ When creating a new skill in skills/<name>/:
    The name MUST follow the naming rules above.
    The description is the triggering mechanism -- include WHAT the skill does and WHEN to use it.
    Description must be a clear, complete sentence (min 20 chars). Generic descriptions = FAILED.
-3. CONCISENESS: SKILL.md body should be under 500 lines. Keep instructions lean.
+4. CONCISENESS: SKILL.md body should be under 500 lines. Keep instructions lean.
    Only include information the agent does not already know. Move detailed reference
    material to references/ files, not into SKILL.md itself.
-4. EXPORT VERIFICATION: Every exported function must be importable.
+5. EXPORT VERIFICATION: Every exported function must be importable.
    Run: node -e "const s = require('./skills/<name>'); console.log(Object.keys(s))"
    If this fails, the skill is broken. Fix before solidify.
-5. NO HARDCODED SECRETS: Never embed API keys, tokens, or secrets in code.
+6. NO HARDCODED SECRETS: Never embed API keys, tokens, or secrets in code.
    Use process.env or .env references. Hardcoded App ID, App Secret, Bearer tokens = FAILED.
-6. TEST BEFORE SOLIDIFY: Actually run the skill's core function to verify it works:
+7. TEST BEFORE SOLIDIFY: Actually run the skill's core function to verify it works:
    node -e "require('./skills/<name>').main ? require('./skills/<name>').main() : console.log('ok')"
    Scripts in scripts/ must also be tested by executing them.
-7. ATOMIC CREATION: Create ALL files for a skill in a single cycle.
+8. ATOMIC CREATION: Create ALL files for a skill in a single cycle.
    Do not create a directory in one cycle and fill it in the next.
    Empty directories from failed cycles will be automatically cleaned up on rollback.
 
