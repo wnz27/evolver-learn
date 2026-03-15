@@ -76,19 +76,15 @@ function geneToSkillMd(gene) {
     '',
   ];
 
-  // -- When to Use --
-  lines.push('## When to Use');
-  lines.push('');
-  if (gene.preconditions && gene.preconditions.length > 0) {
-    gene.preconditions.forEach(function (p) {
-      lines.push('- ' + p);
-    });
-  } else if (gene.signals_match && gene.signals_match.length > 0) {
+  // -- When to Use (derived from signals; preconditions go in their own section) --
+  if (gene.signals_match && gene.signals_match.length > 0) {
+    lines.push('## When to Use');
+    lines.push('');
     lines.push('- When your project encounters: ' + gene.signals_match.slice(0, 4).map(function (s) {
       return '`' + s + '`';
     }).join(', '));
+    lines.push('');
   }
-  lines.push('');
 
   // -- Trigger Signals --
   if (gene.signals_match && gene.signals_match.length > 0) {
@@ -100,7 +96,7 @@ function geneToSkillMd(gene) {
     lines.push('');
   }
 
-  // -- Preconditions (if distinct from When to Use) --
+  // -- Preconditions --
   if (gene.preconditions && gene.preconditions.length > 0) {
     lines.push('## Preconditions');
     lines.push('');
@@ -116,8 +112,12 @@ function geneToSkillMd(gene) {
     lines.push('');
     gene.strategy.forEach(function (step, i) {
       var text = String(step);
-      // Wrap inline code references for readability
-      lines.push((i + 1) + '. **' + extractStepVerb(text) + '** -- ' + stripLeadingVerb(text));
+      var verb = extractStepVerb(text);
+      if (verb) {
+        lines.push((i + 1) + '. **' + verb + '** -- ' + stripLeadingVerb(text));
+      } else {
+        lines.push((i + 1) + '. ' + text);
+      }
     });
     lines.push('');
   }
@@ -173,8 +173,9 @@ function geneToSkillMd(gene) {
  *      "Configure non-interactive mode" -> "Configure"
  */
 function extractStepVerb(step) {
+  // Only match a capitalized verb at the very start (no leading backtick/special chars)
   var match = step.match(/^([A-Z][a-z]+)/);
-  return match ? match[1] : step.split(/\s+/)[0];
+  return match ? match[1] : '';
 }
 
 /**
@@ -182,7 +183,7 @@ function extractStepVerb(step) {
  */
 function stripLeadingVerb(step) {
   var verb = extractStepVerb(step);
-  if (step.startsWith(verb)) {
+  if (verb && step.startsWith(verb)) {
     var rest = step.slice(verb.length).replace(/^[\s:.\-]+/, '');
     return rest || step;
   }
@@ -201,24 +202,26 @@ function publishSkillToHub(gene, opts) {
   var hubUrl = getHubUrl();
   if (!hubUrl) return Promise.resolve({ ok: false, error: 'no_hub_url' });
 
-  // Sanitize signals before generating content
-  if (Array.isArray(gene.signals_match)) {
+  // Shallow-copy gene to avoid mutating the caller's object
+  var geneCopy = {};
+  Object.keys(gene).forEach(function (k) { geneCopy[k] = gene[k]; });
+  if (Array.isArray(geneCopy.signals_match)) {
     try {
       var distiller = require('./skillDistiller');
-      gene.signals_match = distiller.sanitizeSignalsMatch(gene.signals_match);
+      geneCopy.signals_match = distiller.sanitizeSignalsMatch(geneCopy.signals_match);
     } catch (e) { /* distiller not available, skip */ }
   }
 
-  var content = geneToSkillMd(gene);
+  var content = geneToSkillMd(geneCopy);
   var nodeId = getNodeId();
   var fmName = content.match(/^name:\s*(.+)$/m);
   var derivedName = fmName ? fmName[1].trim().toLowerCase().replace(/[^a-z0-9]+/g, '_') : (gene.id || 'unnamed').replace(/^gene_/, '');
-  // Strip trailing timestamps from skillId
-  derivedName = derivedName.replace(/_?\d{10,}$/g, '').replace(/_+$/g, '');
+  // Strip ALL embedded timestamps from skillId
+  derivedName = derivedName.replace(/_?\d{10,}_?/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
   var skillId = 'skill_' + derivedName;
 
-  // Clean tags: strip timestamps and invalid entries
-  var tags = opts.tags || gene.signals_match || [];
+  // Clean tags: use already-sanitized signals from geneCopy
+  var tags = opts.tags || geneCopy.signals_match || [];
   tags = tags.filter(function (t) {
     var s = String(t || '').trim();
     return s.length >= 3 && !/^\d+$/.test(s) && !/\d{10,}/.test(s);
@@ -228,7 +231,7 @@ function publishSkillToHub(gene, opts) {
     sender_id: nodeId,
     skill_id: skillId,
     content: content,
-    category: opts.category || gene.category || null,
+    category: opts.category || geneCopy.category || null,
     tags: tags,
   };
 
