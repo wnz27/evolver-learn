@@ -307,6 +307,7 @@ function readRecentFailedCapsules(limit) {
     var list = Array.isArray(current.failed_capsules) ? current.failed_capsules : [];
     return list.slice(Math.max(0, list.length - n));
   } catch (e) {
+    console.warn('[AssetStore] Failed to read failed_capsules.json:', e && e.message || e);
     return [];
   }
 }

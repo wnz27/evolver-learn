@@ -751,12 +751,12 @@ function completeDistillation(responseText) {
   assetStore.upsertGene(gene);
   console.log('[Distiller] Gene "' + gene.id + '" written to genes.json.');
 
-  const state2 = readDistillerState();
-  state2.last_distillation_at = new Date().toISOString();
-  state2.last_data_hash = request.data_hash;
-  state2.last_gene_id = gene.id;
-  state2.distillation_count = (state2.distillation_count || 0) + 1;
-  writeDistillerState(state2);
+  const state = readDistillerState();
+  state.last_distillation_at = new Date().toISOString();
+  state.last_data_hash = request.data_hash;
+  state.last_gene_id = gene.id;
+  state.distillation_count = (state.distillation_count || 0) + 1;
+  writeDistillerState(state);
 
   logEntry.status = 'success';
   logEntry.gene = gene;
