@@ -13,7 +13,8 @@ function readJsonIfExists(filePath, fallback) {
     const raw = fs.readFileSync(filePath, 'utf8');
     if (!raw.trim()) return fallback;
     return JSON.parse(raw);
-  } catch {
+  } catch (e) {
+    console.warn('[AssetStore] Failed to read ' + filePath + ':', e && e.message || e);
     return fallback;
   }
 }
