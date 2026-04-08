@@ -759,7 +759,6 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
     capsule_id: capsuleId,
     source_type: sourceType,
     reused_asset_id: reusedAssetId,
-    initial_user_prompt: lastRun && lastRun.initial_user_prompt ? lastRun.initial_user_prompt : null,
     ...(appliedLessons.length > 0 ? { applied_lessons: appliedLessons } : {}),
     gene_library_version: geneLibVersion,
     env_fingerprint: envFp,
@@ -859,7 +858,6 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
       env_fingerprint: envFp,
       source_type: sourceType,
       reused_asset_id: reusedAssetId,
-      initial_user_prompt: lastRun && lastRun.initial_user_prompt ? lastRun.initial_user_prompt : null,
       a2a: { eligible_to_broadcast: false },
       content: capsuleContent,
       diff: capsuleDiff || undefined,
@@ -889,7 +887,6 @@ function solidify({ intent, summary, dryRun = false, rollbackOnFailure = true } 
           constraint_violations: constraintCheck.violations || [],
           env_fingerprint: envFp,
           blast_radius: { files: blast.files, lines: blast.lines },
-          initial_user_prompt: lastRun && lastRun.initial_user_prompt ? lastRun.initial_user_prompt : null,
           created_at: ts,
         };
         failedCapsule.asset_id = computeAssetId(failedCapsule);
