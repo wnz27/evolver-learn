@@ -1,4 +1,4 @@
-const { scoreTagOverlap } = require('./learningSignals');
+const { scoreTagOverlap, expandSignals } = require('./learningSignals');
 const { captureEnvFingerprint } = require('./envFingerprint');
 
 // ---------------------------------------------------------------------------
@@ -139,7 +139,7 @@ function scoreGeneLearning(gene, signals, envFingerprint) {
 
   if (Array.isArray(gene.anti_patterns) && gene.anti_patterns.length > 0) {
     let overlapPenalty = 0;
-    const signalTags = new Set(require('./learningSignals').expandSignals(signals, ''));
+    const signalTags = new Set(expandSignals(signals, ''));
     const recentAntiPatterns = gene.anti_patterns.slice(-6);
     for (let j = 0; j < recentAntiPatterns.length; j++) {
       const anti = recentAntiPatterns[j];

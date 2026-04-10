@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { getMemoryDir } = require('./paths');
+const { getMemoryDir, getEvolutionDir } = require('./paths');
 const { normalizePersonalityState, isValidPersonalityState, personalityKey } = require('./personality');
 const { isValidMutation, normalizeMutation } = require('./mutation');
 
@@ -77,13 +77,11 @@ function extractErrorSignatureFromSignals(signals) {
 }
 
 function memoryGraphPath() {
-  const { getEvolutionDir } = require('./paths');
   const evoDir = getEvolutionDir();
   return process.env.MEMORY_GRAPH_PATH || path.join(evoDir, 'memory_graph.jsonl');
 }
 
 function memoryGraphStatePath() {
-  const { getEvolutionDir } = require('./paths');
   return path.join(getEvolutionDir(), 'memory_graph_state.json');
 }
 
