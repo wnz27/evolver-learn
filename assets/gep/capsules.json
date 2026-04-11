@@ -188,20 +188,20 @@
       "trigger": [
         "protocol_drift"
       ],
-      "gene": "gene_gep_innovate_from_opportunity",
+      "gene": "gene_gep_optimize_prompt_and_assets",
       "summary": "固化：gene_gep_optimize_prompt_and_assets 命中信号 protocol_drift，变更 4 文件 / 29 行。",
-      "confidence": 0.94,
+      "confidence": 0.95,
       "blast_radius": {
         "files": 1,
         "lines": 84
       },
       "outcome": {
         "status": "success",
-        "score": 0.94
+        "score": 0.95
       },
-      "success_streak": 4,
-      "success_reason": "Gene gene_gep_innovate_from_opportunity (innovate) matched signals [protocol_drift]. Scope: 1 file(s), 84 line(s) changed. Outcome score: 0.94. Strategy applied: Extract opportunity signals and identify the specific user need or system gap; Search existing Genes and Capsules for partial matches (avoid reinventing); Design a minimal, testable implementation plan (prefer small increments).",
-      "gene_library_version": "glib_647b4fe43fd10dcd",
+      "success_streak": 5,
+      "success_reason": "Gene gene_gep_optimize_prompt_and_assets (optimize) matched signals [protocol_drift, tool_bypass]. Scope: 1 file(s), 84 line(s) changed. Outcome score: 0.95. Strategy applied: Extract signals and determine selection rationale via Selector JSON; Prefer reusing existing Gene/Capsule; only create if no match exists; Refactor prompt assembly to embed assets (genes, capsules, parent event).",
+      "gene_library_version": "glib_e93bd496f9ec340b",
       "env_fingerprint": {
         "device_id": "15cbc96bf135644ee86668080ace3ea3",
         "node_version": "v22.22.1",
@@ -214,24 +214,23 @@
         "client_version": "1.52.0",
         "cwd": "34dd06fc31b4",
         "container": false,
-        "captured_at": "2026-04-11T07:46:58.417Z"
+        "captured_at": "2026-04-11T07:59:46.353Z"
       },
       "source_type": "generated",
       "reused_asset_id": null,
       "a2a": {
         "eligible_to_broadcast": true
       },
-      "content": "Gene: gene_gep_innovate_from_opportunity (innovate)\n\nSignals: protocol_drift\n\nStrategy:\n1. Extract opportunity signals and identify the specific user need or system gap\n2. Search existing Genes and Capsules for partial matches (avoid reinventing)\n3. Design a minimal, testable implementation plan (prefer small increments)\n4. Estimate blast radius; innovate changes may touch more files but must stay within constraints\n5. Implement the change with clear validation criteria\n6. Validate using declared validation steps; rollback on failure\n7. Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success\n\nScope: 1 file(s), 84 line(s)\n\nChanged files:\npatch_innovate_8.js\n\nOutcome score: 0.94",
+      "content": "Gene: gene_gep_optimize_prompt_and_assets (optimize)\n\nSignals: protocol_drift, tool_bypass\n\nStrategy:\n1. Extract signals and determine selection rationale via Selector JSON\n2. Prefer reusing existing Gene/Capsule; only create if no match exists\n3. Refactor prompt assembly to embed assets (genes, capsules, parent event)\n4. Reduce noise and ambiguity; enforce strict output schema\n5. Validate by running node index.js run and ensuring no runtime errors\n6. Solidify: record EvolutionEvent, update Gene definitions, create Capsule on success\n\nScope: 1 file(s), 84 line(s)\n\nChanged files:\npatch_innovate_9.js\n\nOutcome score: 0.95",
       "strategy": [
-        "Extract opportunity signals and identify the specific user need or system gap",
-        "Search existing Genes and Capsules for partial matches (avoid reinventing)",
-        "Design a minimal, testable implementation plan (prefer small increments)",
-        "Estimate blast radius; innovate changes may touch more files but must stay within constraints",
-        "Implement the change with clear validation criteria",
-        "Validate using declared validation steps; rollback on failure",
-        "Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success"
+        "Extract signals and determine selection rationale via Selector JSON",
+        "Prefer reusing existing Gene/Capsule; only create if no match exists",
+        "Refactor prompt assembly to embed assets (genes, capsules, parent event)",
+        "Reduce noise and ambiguity; enforce strict output schema",
+        "Validate by running node index.js run and ensuring no runtime errors",
+        "Solidify: record EvolutionEvent, update Gene definitions, create Capsule on success"
       ],
-      "asset_id": "sha256:4c408ce015505f92ee2511d5418367dddcb7b3ebc14bd8a9c18aaea9712c379b"
+      "asset_id": "sha256:c5fd556604287becab133d9838aa424a9500d70752172d46d829de8458340a65"
     }
   ]
 }
