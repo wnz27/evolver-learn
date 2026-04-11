@@ -136,20 +136,20 @@
         "evolution_stagnation_detected",
         "stable_success_plateau"
       ],
-      "gene": "gene_gep_innovate_from_opportunity",
+      "gene": "gene_gep_optimize_prompt_and_assets",
       "summary": "固化：gene_gep_optimize_prompt_and_assets 命中信号 evolution_stagnation_detected, stable_success_plateau，变更 1 文件 / 4 行。",
       "confidence": 0.95,
       "blast_radius": {
         "files": 1,
-        "lines": 92
+        "lines": 81
       },
       "outcome": {
         "status": "success",
         "score": 0.95
       },
-      "success_streak": 3,
-      "success_reason": "Gene gene_gep_innovate_from_opportunity (innovate) matched signals [evolution_stagnation_detected, stable_success_plateau]. Scope: 1 file(s), 92 line(s) changed. Outcome score: 0.95. Strategy applied: Extract opportunity signals and identify the specific user need or system gap; Search existing Genes and Capsules for partial matches (avoid reinventing); Design a minimal, testable implementation plan (prefer small increments).",
-      "gene_library_version": "glib_431da20258431cef",
+      "success_streak": 4,
+      "success_reason": "Gene gene_gep_optimize_prompt_and_assets (optimize) matched signals [evolution_stagnation_detected, stable_success_plateau]. Scope: 1 file(s), 81 line(s) changed. Outcome score: 0.95. Strategy applied: Extract signals and determine selection rationale via Selector JSON; Prefer reusing existing Gene/Capsule; only create if no match exists; Refactor prompt assembly to embed assets (genes, capsules, parent event).",
+      "gene_library_version": "glib_944f947745862b82",
       "env_fingerprint": {
         "device_id": "15cbc96bf135644ee86668080ace3ea3",
         "node_version": "v22.22.1",
@@ -162,24 +162,23 @@
         "client_version": "1.52.0",
         "cwd": "34dd06fc31b4",
         "container": false,
-        "captured_at": "2026-04-11T07:27:19.166Z"
+        "captured_at": "2026-04-11T07:29:53.660Z"
       },
       "source_type": "generated",
       "reused_asset_id": null,
       "a2a": {
         "eligible_to_broadcast": true
       },
-      "content": "Gene: gene_gep_innovate_from_opportunity (innovate)\n\nSignals: evolution_stagnation_detected, stable_success_plateau\n\nStrategy:\n1. Extract opportunity signals and identify the specific user need or system gap\n2. Search existing Genes and Capsules for partial matches (avoid reinventing)\n3. Design a minimal, testable implementation plan (prefer small increments)\n4. Estimate blast radius; innovate changes may touch more files but must stay within constraints\n5. Implement the change with clear validation criteria\n6. Validate using declared validation steps; rollback on failure\n7. Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success\n\nScope: 1 file(s), 92 line(s)\n\nChanged files:\npatch_repair.js\n\nOutcome score: 0.95",
+      "content": "Gene: gene_gep_optimize_prompt_and_assets (optimize)\n\nSignals: evolution_stagnation_detected, stable_success_plateau\n\nStrategy:\n1. Extract signals and determine selection rationale via Selector JSON\n2. Prefer reusing existing Gene/Capsule; only create if no match exists\n3. Refactor prompt assembly to embed assets (genes, capsules, parent event)\n4. Reduce noise and ambiguity; enforce strict output schema\n5. Validate by running node index.js run and ensuring no runtime errors\n6. Solidify: record EvolutionEvent, update Gene definitions, create Capsule on success\n\nScope: 1 file(s), 81 line(s)\n\nChanged files:\npatch_innovate_3.js\n\nOutcome score: 0.95",
       "strategy": [
-        "Extract opportunity signals and identify the specific user need or system gap",
-        "Search existing Genes and Capsules for partial matches (avoid reinventing)",
-        "Design a minimal, testable implementation plan (prefer small increments)",
-        "Estimate blast radius; innovate changes may touch more files but must stay within constraints",
-        "Implement the change with clear validation criteria",
-        "Validate using declared validation steps; rollback on failure",
-        "Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success"
+        "Extract signals and determine selection rationale via Selector JSON",
+        "Prefer reusing existing Gene/Capsule; only create if no match exists",
+        "Refactor prompt assembly to embed assets (genes, capsules, parent event)",
+        "Reduce noise and ambiguity; enforce strict output schema",
+        "Validate by running node index.js run and ensuring no runtime errors",
+        "Solidify: record EvolutionEvent, update Gene definitions, create Capsule on success"
       ],
-      "asset_id": "sha256:84127ed9753d5af7aa2fbde4ce57641e2a19009d3768b1c030c7dfaec33ccab1"
+      "asset_id": "sha256:ae0ed6e030c67818b9b1fe406458b8c8a942f1de6eaba0b78cdab1aa03c60863"
     },
     {
       "type": "Capsule",
