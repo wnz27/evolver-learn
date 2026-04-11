@@ -77,25 +77,56 @@
     },
     {
       "type": "Capsule",
-      "schema_version": "1.5.0",
+      "schema_version": "1.6.0",
       "id": "capsule_1775288226446",
       "trigger": [
         "perf_bottleneck",
         "user_improvement_suggestion"
       ],
-      "gene": "ad_hoc",
+      "gene": "gene_gep_innovate_from_opportunity",
       "summary": "Optimized memory_graph.jsonl tail read, fileTransportReceive bounds, sleepSync fallback, acquireLock atomicity, health_check cache",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "blast_radius": {
-        "files": 0,
-        "lines": 0
+        "files": 1,
+        "lines": 14
       },
       "outcome": {
         "status": "success",
-        "score": 0.9
+        "score": 0.95
       },
       "success_streak": 1,
-      "asset_id": "sha256:4a2f205213e3c019f7c8e99faf4cfdd65f900f0e8771684002207ee01e96cfa7"
+      "success_reason": "Gene gene_gep_innovate_from_opportunity (innovate) matched signals [protocol_drift, user_improvement_suggestion, tool_bypass]. Scope: 1 file(s), 14 line(s) changed. Outcome score: 0.95. Strategy applied: Extract opportunity signals and identify the specific user need or system gap; Search existing Genes and Capsules for partial matches (avoid reinventing); Design a minimal, testable implementation plan (prefer small increments).",
+      "gene_library_version": "glib_a86530875a869cec",
+      "env_fingerprint": {
+        "device_id": "15cbc96bf135644ee86668080ace3ea3",
+        "node_version": "v22.22.1",
+        "platform": "linux",
+        "arch": "x64",
+        "os_release": "6.1.0-43-cloud-amd64",
+        "hostname": "750936576a4d",
+        "evolver_version": "1.52.0",
+        "client": "@evomap/evolver",
+        "client_version": "1.52.0",
+        "cwd": "34dd06fc31b4",
+        "container": false,
+        "captured_at": "2026-04-11T07:20:43.376Z"
+      },
+      "source_type": "generated",
+      "reused_asset_id": null,
+      "a2a": {
+        "eligible_to_broadcast": false
+      },
+      "content": "Gene: gene_gep_innovate_from_opportunity (innovate)\n\nSignals: protocol_drift, user_improvement_suggestion, tool_bypass\n\nStrategy:\n1. Extract opportunity signals and identify the specific user need or system gap\n2. Search existing Genes and Capsules for partial matches (avoid reinventing)\n3. Design a minimal, testable implementation plan (prefer small increments)\n4. Estimate blast radius; innovate changes may touch more files but must stay within constraints\n5. Implement the change with clear validation criteria\n6. Validate using declared validation steps; rollback on failure\n7. Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success\n\nScope: 1 file(s), 14 line(s)\n\nChanged files:\npatch_skills.js\n\nOutcome score: 0.95",
+      "strategy": [
+        "Extract opportunity signals and identify the specific user need or system gap",
+        "Search existing Genes and Capsules for partial matches (avoid reinventing)",
+        "Design a minimal, testable implementation plan (prefer small increments)",
+        "Estimate blast radius; innovate changes may touch more files but must stay within constraints",
+        "Implement the change with clear validation criteria",
+        "Validate using declared validation steps; rollback on failure",
+        "Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success"
+      ],
+      "asset_id": "sha256:1b279059a975db9ff373004255494270df9ae752fe2a975cabb12b009cf428b3"
     },
     {
       "type": "Capsule",

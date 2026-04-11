@@ -181,7 +181,31 @@
       "validation": [
         "node scripts/validate-modules.js ./src/evolve ./src/gep/solidify ./src/gep/policyCheck ./src/gep/mutation ./src/gep/personality",
         "node scripts/validate-suite.js"
-      ]
+      ],
+      "learning_history": [
+        {
+          "at": "2026-04-11T07:20:48.894Z",
+          "outcome": "success",
+          "mode": "none",
+          "reason_class": "unknown",
+          "retryable": false,
+          "learning_signals": [
+            "protocol_drift",
+            "user_improvement_suggestion",
+            "tool_bypass"
+          ]
+        }
+      ],
+      "epigenetic_marks": [
+        {
+          "context": "linux/x64/v22.22.1",
+          "boost": 0.1,
+          "reason": "success_in_environment",
+          "created_at": "2026-04-11T07:20:48.894Z"
+        }
+      ],
+      "schema_version": "1.6.0",
+      "asset_id": "sha256:a82bf6671281540a09b723685f3338bea6e21e804c03f0cecd1fee64fd7eb3ce"
     }
   ]
 }
