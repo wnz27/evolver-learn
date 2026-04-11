@@ -2173,6 +2173,7 @@ async function run() {
         commitment_deadline: activeTask ? (activeTask._commitment_deadline || null) : null,
         applied_lessons: hubLessons.map(function(l) { return l.lesson_id; }).filter(Boolean),
         hub_lessons: hubLessons,
+        cycleId: cycleNum,
       };
     writeStateForSolidify(prevState);
 
@@ -2329,6 +2330,7 @@ ${sharedKnowledgeContext}
         strategyPolicy,
         failedCapsules: recentFailedCapsules,
         hubLessons,
+        cycleId: cycleNum,
       });
 
   // Optional: emit a compact thought process block for wrappers (noise-controlled).

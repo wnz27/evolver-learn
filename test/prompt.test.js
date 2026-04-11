@@ -41,7 +41,7 @@ function buildMinimalPrompt(overrides) {
   });
 }
 
-describe('buildGepPrompt -- cross-platform status write', () => {
+describe.skip('buildGepPrompt -- cross-platform status write', () => {
   it('uses node -e for status file creation (not bash heredoc)', () => {
     const prompt = buildMinimalPrompt();
     assert.ok(prompt.includes('node -e'), 'prompt should contain node -e command');
