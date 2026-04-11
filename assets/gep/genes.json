@@ -111,14 +111,24 @@
           "learning_signals": [
             "protocol_drift"
           ]
+        },
+        {
+          "at": "2026-04-11T07:16:53.821Z",
+          "outcome": "success",
+          "mode": "none",
+          "reason_class": "unknown",
+          "retryable": false,
+          "learning_signals": [
+            "protocol_drift"
+          ]
         }
       ],
       "epigenetic_marks": [
         {
           "context": "linux/x64/v22.22.1",
-          "boost": 0.1,
+          "boost": 0.15000000000000002,
           "reason": "reinforced_by_success",
-          "created_at": "2026-04-11T07:14:57.830Z"
+          "created_at": "2026-04-11T07:16:53.821Z"
         }
       ],
       "schema_version": "1.6.0",

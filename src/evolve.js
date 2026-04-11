@@ -1221,7 +1221,7 @@ async function run() {
   // 2. Detect Workspace State & Local Overrides
   // Logic: Default to generic reporting (message)
   let fileList = '';
-  const skillsDir = path.join(REPO_ROOT, 'skills');
+  const skillsDir = path.join(getWorkspaceRoot(), 'skills');
 
   // Default Reporting: Use generic `message` tool or `process.env.EVOLVE_REPORT_CMD` if set.
   // This removes the hardcoded dependency on 'feishu-card' from the core logic.
